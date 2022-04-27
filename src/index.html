@@ -6,13 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>El spotpris</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.0/dayjs.min.js"></script>
   </head>
   <body>
     <canvas id="chart" width="400" height="200"></canvas>
 
     <script>
       const chart = createChart("#chart");
+      const dateTimeFormat = new Intl.DateTimeFormat(navigator.languages, {
+        weekday: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      const currencyFormat = new Intl.NumberFormat(navigator.languages, {
+        style: "currency",
+        currency: "DKK",
+      });
 
       refresh();
       setInterval(refresh, 30 * 60 * 1000);
@@ -22,11 +31,11 @@
           .then((res) => res.json())
           .then((data) => data.forecast);
 
-        chart.options.plugins.title.text = `El spotpris (updated ${dayjs().format(
-          "ddd HH:mm"
+        chart.options.plugins.title.text = `El spotpris (opdateret ${dateTimeFormat.format(
+          new Date()
         )})`;
         chart.data.datasets[0].data = forecast.map((record) => ({
-          x: dayjs(record.time).format("ddd HH:mm"),
+          x: dateTimeFormat.format(new Date(record.time)),
           y: record.priceDkk,
         }));
 
@@ -36,10 +45,6 @@
       function createChart(selector) {
         let chartWidth, chartHeight, lineGradient;
 
-        const dkkFormat = new Intl.NumberFormat("da-DK", {
-          style: "currency",
-          currency: "DKK",
-        });
         const ctx = document.querySelector(selector);
         const chart = new Chart(ctx, {
           type: "line",
@@ -51,7 +56,7 @@
                 tooltip: {
                   callbacks: {
                     label: (context) =>
-                      `${context.dataset.label}: ${dkkFormat.format(
+                      `${context.dataset.label}: ${currencyFormat.format(
                         context.parsed.y
                       )}`,
                   },
