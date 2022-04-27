@@ -1,9 +1,7 @@
 export async function onRequestGet(context) {
-  const kv = context.env["elspot"];
-
   const [forecastInEur, eurToDkkRate] = await Promise.all([
     getForecast(),
-    getEurToDkkRate(kv),
+    getEurToDkkRate(),
   ]);
 
   const forecast = forecastInEur.map((record) => ({
@@ -36,22 +34,32 @@ async function getPrices() {
   const res = await fetch(
     "https://api.energidataservice.dk/datastore_search?resource_id=elspotprices&limit=36&filters={%22PriceArea%22:%20%22DK2%22}&sort=HourUTC%20desc&fields=HourUTC,SpotPriceEUR"
   );
+
+  if (!res.ok) {
+    throw new Error("Could not fetch spot prices");
+  }
+
   const data = await res.json();
   return data.result.records;
 }
 
-async function getEurToDkkRate(kv) {
-  const url = "https://api.exchangerate.host/convert?from=EUR&to=DKK";
+async function getEurToDkkRate() {
+  const res = await fetch(
+    "https://api.exchangerate.host/convert?from=EUR&to=DKK",
+    {
+      // Cloudflare: cache successful statuses for a day
+      cf: {
+        cacheTtlByStatus: {
+          "200-299": 60 * 60 * 24,
+        },
+      },
+    }
+  );
 
-  let data = await kv.get(url, { type: "json" });
-
-  if (!data) {
-    const res = await fetch(url);
-    data = await res.json();
-    await kv.put(url, JSON.stringify(data), {
-      expirationTtl: 60 * 60 * 24,
-    });
+  if (!res.ok) {
+    throw new Error("Could not fetch EUR to DKK rates");
   }
 
+  const data = await res.json();
   return data.result;
 }
