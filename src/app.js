@@ -1,6 +1,7 @@
 import {
   CategoryScale,
   Chart,
+  Filler,
   Legend,
   LinearScale,
   LineController,
@@ -12,6 +13,7 @@ import {
 
 Chart.register(
   CategoryScale,
+  Filler,
   Legend,
   LinearScale,
   LineController,
