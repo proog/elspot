@@ -1,4 +1,5 @@
 export function getCheapestRange(forecast, maxEndTime, hours) {
+  const now = new Date();
   const options = forecast
     .slice(0, forecast.length - hours)
     .map((startRecord, index) => {
@@ -9,12 +10,14 @@ export function getCheapestRange(forecast, maxEndTime, hours) {
 
       return { startTime, endTime, records, sum };
     })
-    .filter((record) => record.endTime <= maxEndTime);
+    .filter(
+      (record) => now <= record.startTime && record.endTime <= maxEndTime
+    );
 
   if (!options.length) {
     return {
-      startTime: addHours(maxEndTime, -hours),
-      endTime: maxEndTime,
+      startTime: now,
+      endTime: addHours(now, hours),
       records: [],
       sum: null,
     };
