@@ -12,12 +12,11 @@ export async function getForecast() {
 }
 
 async function getPrices() {
-  const url = new URL("https://api.energidataservice.dk/datastore_search");
-  url.searchParams.set("resource_id", "elspotprices");
+  const url = new URL("https://api.energidataservice.dk/dataset/Elspotprices");
   url.searchParams.set("limit", "36");
-  url.searchParams.set("filters", JSON.stringify({ PriceArea: "DK2" }));
+  url.searchParams.set("filter", JSON.stringify({ PriceArea: "DK2" }));
   url.searchParams.set("sort", "HourUTC desc");
-  url.searchParams.set("fields", "HourUTC,SpotPriceEUR");
+  url.searchParams.set("columns", "HourUTC,SpotPriceEUR");
 
   const res = await fetch(url.toString());
 
@@ -26,5 +25,5 @@ async function getPrices() {
   }
 
   const data = await res.json();
-  return data.result.records;
+  return data.records;
 }
