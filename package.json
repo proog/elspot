@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "chart.js": "^3.9.1",
-    "parcel": "^2.7.0",
-    "wrangler": "^2.0.29"
+    "parcel": "^2.8.0",
+    "wrangler": "^2.4.2"
   }
 }
