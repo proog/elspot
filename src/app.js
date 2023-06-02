@@ -42,16 +42,15 @@ setInterval(refresh, refreshIntervalSeconds * 1000);
 async function refresh() {
   let url = "/forecast";
 
-  const priceArea = new URL(window.location.href).searchParams.get("area");
-  if (priceArea) {
-    url += `?area=${priceArea}`;
+  const areaParam = new URL(window.location.href).searchParams.get("area");
+  if (areaParam) {
+    url += `?area=${areaParam}`;
   }
 
-  const forecast = await fetch(url)
-    .then((res) => res.json())
-    .then((data) => data.forecast);
+  const response = await fetch(url).then((res) => res.json());
+  const { forecast, priceArea } = response;
 
-  chart.options.plugins.title.text = `El spotpris (opdateret ${dateTimeFormat.format(
+  chart.options.plugins.title.text = `El spotpris for ${priceArea} (opdateret ${dateTimeFormat.format(
     new Date()
   )})`;
   chart.data.datasets[0].data = forecast.map((record) => ({
