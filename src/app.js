@@ -34,12 +34,20 @@ const currencyFormat = new Intl.NumberFormat(navigator.languages, {
   style: "currency",
   currency: "DKK",
 });
+const refreshIntervalSeconds = 1800; // 30 minutes
 
 refresh();
-setInterval(refresh, 30 * 60 * 1000);
+setInterval(refresh, refreshIntervalSeconds * 1000);
 
 async function refresh() {
-  const forecast = await fetch("/forecast")
+  let url = "/forecast";
+
+  const priceArea = new URL(window.location.href).searchParams.get("area");
+  if (priceArea) {
+    url += `?area=${priceArea}`;
+  }
+
+  const forecast = await fetch(url)
     .then((res) => res.json())
     .then((data) => data.forecast);
 

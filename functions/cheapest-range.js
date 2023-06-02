@@ -2,9 +2,11 @@ import { getCheapestRange } from "../functions-lib/cheapest-range";
 import { getForecast } from "../functions-lib/forecast";
 
 export async function onRequestGet(context) {
-  const queryParams = new URL(context.request.url).searchParams;
-  const maxEndTime = new Date(queryParams.get("maxEndTime"));
-  const hours = parseInt(queryParams.get("hours"));
+  const { searchParams } = new URL(context.request.url);
+
+  const priceArea = searchParams.get("area") || "DK2";
+  const maxEndTime = new Date(searchParams.get("maxEndTime"));
+  const hours = parseInt(searchParams.get("hours"));
 
   if (isNaN(maxEndTime.getTime()) || isNaN(hours)) {
     return new Response(
@@ -15,10 +17,10 @@ export async function onRequestGet(context) {
     );
   }
 
-  const forecast = await getForecast();
+  const forecast = await getForecast(priceArea);
   const cheapestRange = getCheapestRange(forecast, maxEndTime, hours);
 
-  return new Response(JSON.stringify(cheapestRange), {
+  return new Response(JSON.stringify({ ...cheapestRange, priceArea }), {
     headers: {
       "Content-Type": "application/json",
     },

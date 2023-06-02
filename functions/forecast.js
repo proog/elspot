@@ -2,8 +2,11 @@ import { getExchangeRate } from "../functions-lib/exchange-rate";
 import { getForecast } from "../functions-lib/forecast";
 
 export async function onRequestGet(context) {
+  const { searchParams } = new URL(context.request.url);
+  const priceArea = searchParams.get("area") || "DK2";
+
   const [forecastInEur, eurToDkkRate] = await Promise.all([
-    getForecast(),
+    getForecast(priceArea),
     getExchangeRate("EUR", "DKK"),
   ]);
 
@@ -13,7 +16,7 @@ export async function onRequestGet(context) {
     priceDkk: (record.SpotPriceEUR * eurToDkkRate) / 1000,
   }));
 
-  return new Response(JSON.stringify({ forecast }), {
+  return new Response(JSON.stringify({ priceArea, forecast }), {
     headers: {
       "Content-Type": "application/json",
     },

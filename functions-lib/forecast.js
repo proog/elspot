@@ -1,5 +1,5 @@
-export async function getForecast() {
-  const prices = await getPrices();
+export async function getForecast(priceArea) {
+  const prices = await getPrices(priceArea);
   const anHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
   return prices
@@ -11,10 +11,10 @@ export async function getForecast() {
     });
 }
 
-async function getPrices() {
+async function getPrices(priceArea) {
   const url = new URL("https://api.energidataservice.dk/dataset/Elspotprices");
   url.searchParams.set("limit", "36");
-  url.searchParams.set("filter", JSON.stringify({ PriceArea: "DK2" }));
+  url.searchParams.set("filter", JSON.stringify({ PriceArea: priceArea }));
   url.searchParams.set("sort", "HourUTC desc");
   url.searchParams.set("columns", "HourUTC,SpotPriceEUR");
 
