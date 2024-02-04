@@ -1,25 +1,18 @@
 export async function getForecast(priceArea) {
-  const prices = await getPrices(priceArea);
-  const anHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+  const prices = await getPrices(priceArea, 50);
 
-  return prices
-    .map((record) => ({
-      time: new Date(record.HourUTC + "Z"),
-      priceEur: record.SpotPriceEUR / 1000,
-    }))
-    .filter((record) => record.time > anHourAgo)
-    .sort((a, b) => {
-      if (a.time < b.time) return -1;
-      if (a.time > b.time) return 1;
-      return 0;
-    });
+  return prices.map((record) => ({
+    time: new Date(record.HourUTC + "Z"),
+    priceEur: record.SpotPriceEUR / 1000,
+  }));
 }
 
-async function getPrices(priceArea) {
+async function getPrices(priceArea, limit) {
   const url = new URL("https://api.energidataservice.dk/dataset/Elspotprices");
-  url.searchParams.set("limit", "36");
+  url.searchParams.set("limit", limit);
   url.searchParams.set("filter", JSON.stringify({ PriceArea: priceArea }));
-  url.searchParams.set("sort", "HourUTC desc");
+  url.searchParams.set("start", "NowUTC-PT1H");
+  url.searchParams.set("sort", "HourUTC asc");
   url.searchParams.set("columns", "HourUTC,SpotPriceEUR");
 
   const res = await fetch(url.toString());
