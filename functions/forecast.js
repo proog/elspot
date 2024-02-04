@@ -11,9 +11,9 @@ export async function onRequestGet(context) {
   ]);
 
   const forecast = forecastInEur.map((record) => ({
-    time: record.HourUTC,
-    priceEur: record.SpotPriceEUR / 1000,
-    priceDkk: (record.SpotPriceEUR * eurToDkkRate) / 1000,
+    time: record.time.toISOString(),
+    priceEur: record.priceEur,
+    priceDkk: record.priceEur * eurToDkkRate,
   }));
 
   return new Response(JSON.stringify({ priceArea, forecast }), {

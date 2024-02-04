@@ -3,10 +3,10 @@ export function getCheapestRange(forecast, maxEndTime, hours) {
   const options = forecast
     .slice(0, forecast.length - hours)
     .map((startRecord, index) => {
-      const startTime = new Date(startRecord.HourUTC);
+      const startTime = startRecord.time;
       const endTime = addHours(startTime, hours);
       const records = forecast.slice(index, index + hours);
-      const sum = records.reduce((sum, r) => sum + r.SpotPriceEUR, 0);
+      const sum = records.reduce((sum, r) => sum + r.priceEur, 0);
 
       return { startTime, endTime, records, sum };
     })

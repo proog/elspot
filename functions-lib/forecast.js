@@ -3,10 +3,14 @@ export async function getForecast(priceArea) {
   const anHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
   return prices
-    .filter((record) => new Date(record.HourUTC) > anHourAgo)
+    .map((record) => ({
+      time: new Date(record.HourUTC + "Z"),
+      priceEur: record.SpotPriceEUR / 1000,
+    }))
+    .filter((record) => record.time > anHourAgo)
     .sort((a, b) => {
-      if (a.HourUTC < b.HourUTC) return -1;
-      if (a.HourUTC > b.HourUTC) return 1;
+      if (a.time < b.time) return -1;
+      if (a.time > b.time) return 1;
       return 0;
     });
 }
