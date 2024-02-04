@@ -4,9 +4,10 @@ import { getForecast } from "../functions-lib/forecast";
 export async function onRequestGet(context) {
   const { searchParams } = new URL(context.request.url);
   const priceArea = searchParams.get("area") || "DK2";
+  const limit = parseInt(searchParams.get("limit")) || 50;
 
   const [forecastInEur, eurToDkkRate] = await Promise.all([
-    getForecast(priceArea),
+    getForecast(priceArea, limit),
     getExchangeRate("EUR", "DKK"),
   ]);
 

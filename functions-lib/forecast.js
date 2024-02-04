@@ -1,5 +1,5 @@
-export async function getForecast(priceArea) {
-  const prices = await getPrices(priceArea, 50);
+export async function getForecast(priceArea, limit) {
+  const prices = await getPrices(priceArea, limit);
 
   return prices.map((record) => ({
     time: new Date(record.HourUTC + "Z"),
