@@ -11,8 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chart.js": "^4.4.0",
-    "parcel": "^2.9.3",
-    "wrangler": "^3.10.1"
+    "chart.js": "^4.4.1",
+    "parcel": "^2.11.0",
+    "wrangler": "^3.26.0"
   }
 }
