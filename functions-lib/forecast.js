@@ -7,7 +7,7 @@ export async function getForecast(priceArea, limit) {
   }));
 }
 
-async function getPrices(priceArea, limit) {
+async function getPrices(priceArea, limit = 50) {
   const url = new URL("https://api.energidataservice.dk/dataset/Elspotprices");
   url.searchParams.set("limit", limit);
   url.searchParams.set("filter", JSON.stringify({ PriceArea: priceArea }));
