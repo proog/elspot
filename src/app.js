@@ -10,8 +10,10 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
+import Annotation from "chartjs-plugin-annotation";
 
 Chart.register(
+  Annotation,
   CategoryScale,
   Filler,
   Legend,
@@ -23,7 +25,6 @@ Chart.register(
   Tooltip
 );
 
-const chart = createChart("#chart");
 const dateTimeFormat = new Intl.DateTimeFormat(navigator.languages, {
   weekday: "short",
   hour: "2-digit",
@@ -35,9 +36,23 @@ const currencyFormat = new Intl.NumberFormat(navigator.languages, {
   currency: "DKK",
 });
 const refreshIntervalSeconds = 1800; // 30 minutes
+const chartUpdateIntervalSeconds = 3;
+const chart = createChart("#chart");
 
 refresh();
-setInterval(refresh, refreshIntervalSeconds * 1000);
+
+let chartUpdateInterval;
+setInterval(async () => {
+  // Pause automatic chart updates to avoid concurrent calls to chart.update()
+  clearInterval(chartUpdateInterval);
+
+  await refresh();
+
+  chartUpdateInterval = setInterval(
+    () => chart.update(),
+    chartUpdateIntervalSeconds * 1000
+  );
+}, refreshIntervalSeconds * 1000);
 
 async function refresh() {
   let url = "/forecast";
@@ -98,6 +113,33 @@ function createChart(selector) {
       plugins: {
         legend: { display: false },
         title: { display: true },
+        annotation: {
+          annotations: {
+            nowLine: {
+              type: "line",
+              scaleID: "x",
+              label: { content: "Nu", display: true },
+              value: (context) => {
+                const data = context.chart.data.datasets[0].data;
+
+                if (!data.length) {
+                  return;
+                }
+
+                // Calculate an appropriate point between two data points on which to place a vertical line
+                const now = new Date();
+                const formattedNow = dateTimeFormat.format(now);
+                const indexOfHour = data.reduce(
+                  (result, point, index) =>
+                    point.x <= formattedNow ? index : result,
+                  -1
+                );
+
+                return indexOfHour + now.getMinutes() / 60;
+              },
+            },
+          },
+        },
       },
       scales: {
         y: {
