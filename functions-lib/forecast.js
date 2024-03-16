@@ -11,7 +11,7 @@ async function getPrices(priceArea, limit = 50) {
   const url = new URL("https://api.energidataservice.dk/dataset/Elspotprices");
   url.searchParams.set("limit", limit);
   url.searchParams.set("filter", JSON.stringify({ PriceArea: priceArea }));
-  url.searchParams.set("start", "NowUTC-PT1H");
+  url.searchParams.set("start", "NowUTC-PT2H");
   url.searchParams.set("sort", "HourUTC asc");
   url.searchParams.set("columns", "HourUTC,SpotPriceEUR");
 
