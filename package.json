@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "wrangler pages dev -- npm run serve",
-    "serve": "parcel serve ./src/index.html --no-hmr",
-    "build": "parcel build ./src/index.html"
+    "start": "wrangler pages dev --proxy 5173 -- npm run serve",
+    "serve": "vite serve ./src",
+    "build": "vite build ./src --outDir ../dist"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,7 @@
   "dependencies": {
     "chart.js": "^4.4.2",
     "chartjs-plugin-annotation": "^3.0.1",
-    "parcel": "^2.12.0",
+    "vite": "^5.1.6",
     "wrangler": "^3.34.2"
   }
 }
