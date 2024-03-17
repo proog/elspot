@@ -71,6 +71,7 @@ async function refresh() {
   chart.data.datasets[0].data = forecast.map((record) => ({
     x: dateTimeFormat.format(new Date(record.time)),
     y: record.priceDkk,
+    time: new Date(record.time),
   }));
 
   chart.update();
@@ -118,7 +119,7 @@ function createChart(selector) {
             nowLine: {
               type: "line",
               scaleID: "x",
-              label: { content: "Nu", display: true },
+              label: { content: "Nu", display: true, position: "start" },
               value: (context) => {
                 const data = context.chart.data.datasets[0].data;
 
@@ -128,10 +129,9 @@ function createChart(selector) {
 
                 // Calculate an appropriate point between two data points on which to place a vertical line
                 const now = new Date();
-                const formattedNow = dateTimeFormat.format(now);
                 const indexOfHour = data.reduce(
                   (result, point, index) =>
-                    point.x <= formattedNow ? index : result,
+                    point.time <= now ? index : result,
                   -1
                 );
 
