@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "wrangler pages dev --proxy 5173 -- npm run serve",
-    "serve": "vite serve ./src",
-    "build": "vite build ./src --outDir ../dist --emptyOutDir"
+    "start": "npm run build && npm run serve",
+    "serve": "wrangler pages dev ./dist --compatibility-date=2025-10-04",
+    "build": "vite build ./src --outDir ../dist --emptyOutDir",
+    "watch": "vite build ./src --outDir ../dist --emptyOutDir --watch"
   },
   "keywords": [],
   "author": "",
