@@ -2,16 +2,17 @@
   "name": "elspot",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
-    "start": "npm run build && npm run serve",
-    "serve": "wrangler pages dev ./dist --compatibility-date=2025-10-04",
+    "serve": "vite dev",
     "build": "vite build",
-    "watch": "vite build --watch"
+    "start": "npm run serve"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@cloudflare/vite-plugin": "^1.13.10",
     "chart.js": "^4.5.0",
     "chartjs-plugin-annotation": "^3.1.0",
     "vite": "^7.1.9",
