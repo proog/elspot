@@ -5,8 +5,8 @@
   "scripts": {
     "start": "npm run build && npm run serve",
     "serve": "wrangler pages dev ./dist --compatibility-date=2025-10-04",
-    "build": "vite build ./src --outDir ../dist --emptyOutDir",
-    "watch": "vite build ./src --outDir ../dist --emptyOutDir --watch"
+    "build": "vite build",
+    "watch": "vite build --watch"
   },
   "keywords": [],
   "author": "",
